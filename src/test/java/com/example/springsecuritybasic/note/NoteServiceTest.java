@@ -1,7 +1,8 @@
 package com.example.springsecuritybasic.note;
 
-import me.benny.practice.spring.security.user.User;
-import me.benny.practice.spring.security.user.UserRepository;
+
+import com.example.springsecuritybasic.user.User;
+import com.example.springsecuritybasic.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

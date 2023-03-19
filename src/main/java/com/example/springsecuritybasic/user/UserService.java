@@ -1,8 +1,11 @@
 package com.example.springsecuritybasic.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +25,7 @@ public class UserService {
             String username,
             String password
     ) {
-        if (userRepository.findByUsername(username) != null) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new AlreadyRegisteredUserException();
         }
         return userRepository.save(new User(username, passwordEncoder.encode(password), "ROLE_USER"));
@@ -39,13 +42,19 @@ public class UserService {
             String username,
             String password
     ) {
-        if (userRepository.findByUsername(username) != null) {
-            throw new AlreadyRegisteredUserException();
-        }
+        userRepository.findByUsername(username)
+                .ifPresent(user -> {
+                    throw new AlreadyRegisteredUserException();
+                });
+
+//        if (userRepository.findByUsername(username).isPresent()) {
+//            throw new AlreadyRegisteredUserException();
+//        }
         return userRepository.save(new User(username, passwordEncoder.encode(password), "ROLE_ADMIN"));
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("User with username " + username + " not found."));
     }
 }
